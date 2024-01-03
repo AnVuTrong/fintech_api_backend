@@ -1,13 +1,19 @@
 from fastapi import FastAPI
+from sqlmodel import SQLModel
+from blog.database import engine
+from blog.routers import blog, user, authentication
 
 app = FastAPI()
 
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
+def create_tables():
+    SQLModel.metadata.create_all(engine)
 
 
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
+@app.on_event("startup")
+async def on_startup():
+    create_tables()
+
+app.include_router(authentication.router)
+app.include_router(blog.router)
+app.include_router(user.router)
