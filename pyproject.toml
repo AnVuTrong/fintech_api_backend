@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "fintech-api-backend"
+version = "0.1.0"
+description = "This project's purposes are for backend operation of Fintech project"
+authors = ["anvutrong <vta.bsn@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.11"
+fastapi = "^0.108.0"
+alembic = "^1.13.1"
+sqlmodel = "^0.0.14"
+SQLAlchemy = "^2.0.25"
+pydantic-settings = "^2.1.0"
+pandas = "^2.1.4"
+pyarrow = "^14.0.2"
+jupyter = "^1.0.0"
+uvicorn = "^0.25.0"
+asyncpg = "^0.29.0"
+psycopg2-binary = "^2.9.9"
+pydantic = "^2.5.3"
+matplotlib = "^3.8.2"
+python-dotenv = "^1.0.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
