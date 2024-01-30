@@ -1,3 +1,4 @@
+import logging
 import uuid
 from datetime import datetime
 from typing import List, Optional
@@ -98,6 +99,7 @@ async def get_market_news_list_by_entity(
     return list(result.all())
 
 
+
 async def get_market_news_list(
     session: AsyncSession, skip: int = 0, limit: int = 100
 ) -> List[NewsMarket]:
@@ -112,10 +114,10 @@ async def get_market_news_list(
     Returns:
         List[News]: The news list of the entity
     """
-
     statement = select(NewsMarket).offset(skip).limit(limit)
     result = await session.exec(statement)
-    return list(result.all())
+    news_list = list(result.all())
+    return news_list
 
 async def update_market_news(session: AsyncSession, id: str, news: NewsMarket) -> NewsMarket:
     """

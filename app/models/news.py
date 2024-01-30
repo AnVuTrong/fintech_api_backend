@@ -1,6 +1,7 @@
 """
 In this file, we will define the class News which might belong to the whole market or a single company.
 """
+from pydantic import ConfigDict
 from sqlmodel import Field, SQLModel, Relationship
 from typing import Optional
 from datetime import datetime
@@ -29,8 +30,16 @@ class NewsBase(SQLModel):
     # The main content of the news
     maincontent: Optional[str]
 
+    # The main content of the news but in English
+    maincontent_en: Optional[str]
+
+    # The sentiment of the maincontent_en
+    sentiment: Optional[float]
+
     # The entity id of the news
     entity_id: str
+
+    model_config = ConfigDict(from_attributes=True)
 
     # Define the __getitem__ method to allow for easy access to the attributes
     def __getitem__(self, item):

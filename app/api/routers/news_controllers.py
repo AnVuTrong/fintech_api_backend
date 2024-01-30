@@ -1,3 +1,4 @@
+from typing import List
 from fastapi import APIRouter, Depends, status, HTTPException
 from sqlmodel.ext.asyncio.session import AsyncSession
 
@@ -28,7 +29,7 @@ async def get_market_news_by_id(news_id, db: AsyncSession = Depends(get_session)
 
 @router.get(
     "/market/all",
-    response_model=NewsMarket,
+    response_model=list[NewsMarket],
     status_code=status.HTTP_200_OK,
 )
 async def get_all_market_news(
@@ -40,15 +41,14 @@ async def get_all_market_news(
     Get a list of all market news, with limiter.
     :param skip: The number of offset rows.
     :param limit: The number of rows to limit.
-    :param news_id: The ID of the Market News.
     :param db: The database session.
     """
     try:
         return await news_service.get_all_market_news(db, skip, limit)
     except Exception as e:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Server is not available",
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e),
         ) from e
 
 @router.get(

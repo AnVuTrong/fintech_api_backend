@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 
 from fastapi import HTTPException, status
 
@@ -30,7 +30,7 @@ async def get_market_news_by_id(
             detail="News not found",
         ) from e
 
-async def get_all_market_news(db, skip: int = 0, limit: int = 100) -> NewsMarket:
+async def get_all_market_news(db: AsyncSession = None, skip: int = 0, limit: int = 100) -> List[NewsMarket]:
     """
     Retrieve a list of all Market News.
     :param db: The database session.
