@@ -4,7 +4,6 @@ from typing import Optional
 
 
 class UserBase(SQLModel):
-    # We use UUID as the primary key
     username: str
     email: str
     password: str

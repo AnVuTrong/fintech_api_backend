@@ -3,9 +3,6 @@ import dotenv
 
 
 class Settings(BaseSettings):
-    # API for Wifeed
-    WI_FEED_API_KEY: str
-
     # Database configuration
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
