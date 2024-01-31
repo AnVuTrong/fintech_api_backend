@@ -76,6 +76,31 @@ async def get_market_news_date(db: AsyncSession = None) -> Optional[datetime]:
             detail="Something went wrong",
         ) from e
 
+async def get_market_news_by_period(
+    db: AsyncSession = None,
+    from_date: str = None,
+    to_date: str = None
+) -> List[NewsMarket]:
+    """
+    Retrieve a list of Market News by period.
+    :param db: The database session.
+    :param from_date: The start date.
+    :param to_date: The end date.
+    """
+    try:
+        # Convert the dates from string to datetime
+        from_date = datetime.strptime(from_date, "%Y-%m-%d")
+        to_date = datetime.strptime(to_date, "%Y-%m-%d")
+
+        result = await market_news_crud.get_market_news_by_period(db, from_date, to_date)
+        return result
+    except Exception as e:
+        print("error is:", e)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e),
+        ) from e
+
 
 """
 Stock news services

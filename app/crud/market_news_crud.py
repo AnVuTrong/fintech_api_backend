@@ -98,8 +98,6 @@ async def get_market_news_list_by_entity(
     result = await session.exec(statement)
     return list(result.all())
 
-
-
 async def get_market_news_list(
     session: AsyncSession, skip: int = 0, limit: int = 100
 ) -> List[NewsMarket]:
@@ -119,6 +117,28 @@ async def get_market_news_list(
     result = await session.exec(statement)
     news_list = list(result.all())
     return news_list
+
+async def get_market_news_by_period(
+    session: AsyncSession, from_date: str, to_date: str
+) -> List[NewsMarket]:
+    """
+    Get news from the database
+
+    Args:
+        session (Session): The session of the database
+        from_date (str): The start date
+        to_date (str): The end date
+
+    Returns:
+        List[News]: The news list of the entity
+    """
+    statement = (
+        select(NewsMarket)
+        .where(NewsMarket.time >= from_date)
+        .where(NewsMarket.time <= to_date)
+    )
+    result = await session.exec(statement)
+    return list(result.all())
 
 async def update_market_news(session: AsyncSession, id: str, news: NewsMarket) -> NewsMarket:
     """

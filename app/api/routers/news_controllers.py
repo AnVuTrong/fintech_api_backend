@@ -52,6 +52,30 @@ async def get_all_market_news(
         ) from e
 
 @router.get(
+    "/market/period/from-date={from_date}&to-date={to_date}",
+    response_model=list[NewsMarket],
+    status_code=status.HTTP_200_OK,
+)
+async def get_market_news_by_date(
+    from_date: str,
+    to_date: str,
+    db: AsyncSession = Depends(get_session),
+):
+    """
+    Get a list of market news by period.
+    :param from_date: The start date.
+    :param to_date: The end date.
+    :param db: The database session.
+    """
+    try:
+        return await news_service.get_market_news_by_period(db, from_date, to_date)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e),
+        ) from e
+
+@router.get(
     "/market/market_news_latest/latest",
     response_model=NewsMarket,
     status_code=status.HTTP_200_OK,
