@@ -50,6 +50,19 @@ async def get_stock_news_list(
     result = await session.exec(statement)
     return list(result.all())
 
+async def get_stock_news_by_period(
+    session: AsyncSession, from_date: datetime, to_date: datetime, skip: int = 0, limit: int = 100
+) -> List[NewsStock]:
+    statement = (
+        select(NewsStock)
+        .where(NewsStock.time >= from_date)
+        .where(NewsStock.time <= to_date)
+        .offset(skip)
+        .limit(limit)
+    )
+    result = await session.exec(statement)
+    return list(result.all())
+
 
 async def update_stock_news(
     session: AsyncSession, id: str, news: NewsStock

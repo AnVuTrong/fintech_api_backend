@@ -150,3 +150,28 @@ async def get_all_stock_news(db: AsyncSession = None, skip: int = 0, limit: int 
     :param limit: The number of rows to limit.
     """
     return await stock_news_crud.get_stock_news_list(db, skip, limit)
+
+async def get_stock_news_by_period(
+    db: AsyncSession = None,
+    from_date: str = None,
+    to_date: str = None
+) -> List[NewsStock]:
+    """
+    Retrieve a list of Stock News by period.
+    :param db: The database session.
+    :param from_date: The start date.
+    :param to_date: The end date.
+    """
+    try:
+        # Convert the dates from string to datetime
+        from_date = datetime.strptime(from_date, "%Y-%m-%d")
+        to_date = datetime.strptime(to_date, "%Y-%m-%d")
+
+        result = await stock_news_crud.get_stock_news_by_period(db, from_date, to_date)
+        return result
+    except Exception as e:
+        print("error is:", e)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e),
+        ) from e
