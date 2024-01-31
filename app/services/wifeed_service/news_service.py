@@ -30,9 +30,10 @@ async def get_market_news_by_id(
             detail="News not found",
         ) from e
 
-async def get_all_market_news(db: AsyncSession = None, skip: int = 0, limit: int = 100) -> List[NewsMarket]:
+async def get_all_market_news(db: AsyncSession = None, skip: int = 0, limit: int = 100, news_id: str = None) -> List[NewsMarket]:
     """
     Retrieve a list of all Market News.
+    :param news_id: None
     :param db: The database session.
     :param skip: The number of offset rows.
     :param limit: The number of rows to limit.

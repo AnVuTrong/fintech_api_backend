@@ -101,7 +101,7 @@ async def get_market_news_list_by_entity(
 
 
 async def get_market_news_list(
-    session: AsyncSession, skip: int = 0, limit: int = 100
+    session: AsyncSession, skip: int = 0, limit: int = 100, news_id: str = None
 ) -> List[NewsMarket]:
     """
     Get all news from the database
@@ -110,11 +110,12 @@ async def get_market_news_list(
         session (Session): The session of the database
         skip (int): The number of rows to skip
         limit (int): The number of rows to limit
+        news_id (str): The id of the news
 
     Returns:
         List[News]: The news list of the entity
     """
-    statement = select(NewsMarket).offset(skip).limit(limit)
+    statement = select(NewsMarket).where(news_id).offset(skip).limit(limit)
     result = await session.exec(statement)
     news_list = list(result.all())
     return news_list

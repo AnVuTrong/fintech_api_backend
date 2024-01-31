@@ -36,9 +36,11 @@ async def get_all_market_news(
     db: AsyncSession = Depends(get_session),
     skip: int = 0,
     limit: int = 100,
+    news_id: str = None,
 ):
     """
     Get a list of all market news, with limiter.
+    :param news_id: The ID of the Market News.
     :param skip: The number of offset rows.
     :param limit: The number of rows to limit.
     :param db: The database session.
