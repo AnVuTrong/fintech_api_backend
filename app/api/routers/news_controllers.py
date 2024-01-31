@@ -117,3 +117,27 @@ async def get_stock_news_by_id(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="News not found",
         ) from e
+
+@router.get(
+    "/stock/",
+    response_model=list[NewsStock],
+    status_code=status.HTTP_200_OK,
+)
+async def get_all_stock_news(
+    db: AsyncSession = Depends(get_session),
+    skip: int = 0,
+    limit: int = 100,
+):
+    """
+    Get a list of all stock news, with limiter.
+    :param skip: The number of offset rows.
+    :param limit: The number of rows to limit.
+    :param db: The database session.
+    """
+    try:
+        return await news_service.get_all_stock_news(db, skip, limit)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e),
+        ) from e

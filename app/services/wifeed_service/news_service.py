@@ -141,3 +141,12 @@ async def get_stock_news_date(db: AsyncSession = None) -> Optional[datetime]:
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Something went wrong",
         ) from e
+
+async def get_all_stock_news(db: AsyncSession = None, skip: int = 0, limit: int = 100) -> List[NewsStock]:
+    """
+    Retrieve a list of all Stock News.
+    :param db: The database session.
+    :param skip: The number of offset rows.
+    :param limit: The number of rows to limit.
+    """
+    return await stock_news_crud.get_stock_news_list(db, skip, limit)
