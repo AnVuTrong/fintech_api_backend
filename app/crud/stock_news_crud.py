@@ -57,6 +57,7 @@ async def get_stock_news_by_period(
         select(NewsStock)
         .where(NewsStock.time >= from_date)
         .where(NewsStock.time <= to_date)
+        .where(NewsStock.sentiment.isnot(None))
         .offset(skip)
         .limit(limit)
     )
@@ -67,7 +68,7 @@ async def get_stock_news_by_period(
 async def update_stock_news(
     session: AsyncSession, id: str, news: NewsStock
 ) -> NewsStock:
-    statement = select(NewsStock).where(NewsStock.id == id)
+    statement = select(NewsStock).where(NewsStock.id == id).where(NewsStock.sentiment.isnot(None))
     result = (await session.exec(statement)).first()
     for var, value in vars(news).items():
         setattr(result, var, value)

@@ -47,7 +47,9 @@ async def get_market_news(session: AsyncSession, id: str) -> Optional[NewsMarket
     Returns:
         Optional[NewsMarket]: The news
     """
-    statement = select(NewsMarket).where(NewsMarket.id == id)
+    statement = (select(NewsMarket)
+                 .where(NewsMarket.id == id)
+                 .where(NewsMarket.sentiment.isnot(None)))
     result = await session.exec(statement)
     return result.first()
 
@@ -108,12 +110,11 @@ async def get_market_news_list(
         session (Session): The session of the database
         skip (int): The number of rows to skip
         limit (int): The number of rows to limit
-        news_id (str): The id of the news
 
     Returns:
         List[News]: The news list of the entity
     """
-    statement = select(NewsMarket).offset(skip).limit(limit)
+    statement = select(NewsMarket).where(NewsMarket.sentiment.isnot(None)).offset(skip).limit(limit)
     result = await session.exec(statement)
     news_list = list(result.all())
     return news_list
@@ -157,7 +158,7 @@ async def update_market_news(session: AsyncSession, id: str, news: NewsMarket) -
         News: The updated news
     """
 
-    statement = select(NewsMarket).where(NewsMarket.id == id)
+    statement = select(NewsMarket).where(NewsMarket.id == id).where(NewsMarket.sentiment.isnot(None))
     result = (await session.exec(statement)).first()
     for var, value in vars(news).items():
         setattr(result, var, value)
