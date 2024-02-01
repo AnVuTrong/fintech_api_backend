@@ -57,18 +57,22 @@ async def get_all_market_news(
     status_code=status.HTTP_200_OK,
 )
 async def get_market_news_by_date(
-    from_date: str,
-    to_date: str,
-    db: AsyncSession = Depends(get_session),
+        from_date: str,
+        to_date: str,
+        skip: int = 0,
+        limit: int = 100,
+        db: AsyncSession = Depends(get_session),
 ):
     """
     Get a list of market news by period.
+    :param skip: The number of offset rows.
+    :param limit: The number of rows to limit.
     :param from_date: The start date.
     :param to_date: The end date.
     :param db: The database session.
     """
     try:
-        return await news_service.get_market_news_by_period(db, from_date, to_date)
+        return await news_service.get_market_news_by_period(db, from_date, to_date, skip, limit)
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -150,6 +154,8 @@ async def get_all_stock_news(
 async def get_stock_news_by_date(
     from_date: str,
     to_date: str,
+    skip: int = 0,
+    limit: int = 100,
     db: AsyncSession = Depends(get_session),
 ):
     """
@@ -157,9 +163,11 @@ async def get_stock_news_by_date(
     :param from_date: The start date.
     :param to_date: The end date.
     :param db: The database session.
+    :param skip: The number of offset rows.
+    :param limit: The number of rows to limit.
     """
     try:
-        return await news_service.get_stock_news_by_period(db, from_date, to_date)
+        return await news_service.get_stock_news_by_period(db, from_date, to_date, skip, limit)
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

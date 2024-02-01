@@ -77,12 +77,16 @@ async def get_market_news_date(db: AsyncSession = None) -> Optional[datetime]:
         ) from e
 
 async def get_market_news_by_period(
-    db: AsyncSession = None,
-    from_date: str = None,
-    to_date: str = None
+        db: AsyncSession = None,
+        from_date: str = None,
+        to_date: str = None,
+        skip: int = 0,
+        limit: int = 100
 ) -> List[NewsMarket]:
     """
     Retrieve a list of Market News by period.
+    :param skip: The number of offset rows.
+    :param limit: The number of rows to limit.
     :param db: The database session.
     :param from_date: The start date.
     :param to_date: The end date.
@@ -92,8 +96,9 @@ async def get_market_news_by_period(
         from_date = datetime.strptime(from_date, "%Y-%m-%d")
         to_date = datetime.strptime(to_date, "%Y-%m-%d")
 
-        result = await market_news_crud.get_market_news_by_period(db, from_date, to_date)
+        result = await market_news_crud.get_market_news_by_period(db, from_date, to_date, skip, limit)
         return result
+
     except Exception as e:
         print("error is:", e)
         raise HTTPException(
@@ -154,20 +159,24 @@ async def get_all_stock_news(db: AsyncSession = None, skip: int = 0, limit: int 
 async def get_stock_news_by_period(
     db: AsyncSession = None,
     from_date: str = None,
-    to_date: str = None
+    to_date: str = None,
+    skip: int = 0,
+    limit: int = 100,
 ) -> List[NewsStock]:
     """
     Retrieve a list of Stock News by period.
     :param db: The database session.
     :param from_date: The start date.
     :param to_date: The end date.
+    :param skip: The number of offset rows.
+    :param limit: The number of rows to limit.
     """
     try:
         # Convert the dates from string to datetime
         from_date = datetime.strptime(from_date, "%Y-%m-%d")
         to_date = datetime.strptime(to_date, "%Y-%m-%d")
 
-        result = await stock_news_crud.get_stock_news_by_period(db, from_date, to_date)
+        result = await stock_news_crud.get_stock_news_by_period(db, from_date, to_date, skip, limit)
         return result
     except Exception as e:
         print("error is:", e)
