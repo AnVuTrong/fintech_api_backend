@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from app.api.routers import (
     news_controllers,
     user_controllers,
-    index_quoting_controllers
+    index_quoting_controllers, stock_quoting_controllers
 )
 
 api_router = APIRouter()
@@ -18,4 +18,8 @@ api_router.include_router(
 
 api_router.include_router(
     index_quoting_controllers.router, prefix="/news", tags=["Index"]
+)
+
+api_router.include_router(
+    stock_quoting_controllers.router, prefix="/stock_quoting", tags=["Stock Quoting"]
 )
