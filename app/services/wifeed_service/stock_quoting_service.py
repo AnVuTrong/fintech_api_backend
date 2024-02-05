@@ -7,6 +7,21 @@ from app.crud import stock_quote_crud as stock
 from app.models.stock_quoting import HistoryQuoting
 from sqlmodel.ext.asyncio.session import AsyncSession
 
+
+async def get_stock_quote_by_date(
+    db: AsyncSession = None, code: str = None, ngay: str = None
+) -> HistoryQuoting:
+    """
+    Retrieve stock market quoting by date.
+    :param db: The database session.
+    :param code: The stock code.
+    :param ngay: The date of the quoting.
+    """
+    ngay_converted = datetime.strptime(ngay, "%Y-%m-%d") if ngay else None
+    result = await stock.read_stock_quote(db, code, ngay_converted)
+    return result
+
+
 async def get_all_quoting(
     db: AsyncSession = None, skip: int = 0, limit: int = 100
 ) -> list[HistoryQuoting]:
@@ -18,6 +33,7 @@ async def get_all_quoting(
     """
     result = await stock.get_all_quoting(db, skip, limit)
     return result
+
 
 async def get_quoting_by_period(
     db: AsyncSession = None,

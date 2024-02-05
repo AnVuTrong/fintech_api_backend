@@ -1,8 +1,6 @@
-"""
-The entity model is either a whole market or a single company.
-"""
 from typing import Optional, List
 from sqlmodel import Field, SQLModel, Relationship
+
 
 # Define the entity model class that inherits from the base class
 class EntityBase(SQLModel):
@@ -35,10 +33,14 @@ class Entity(EntityBase, table=True):
     intraday_quoting: List["IntradayQuoting"] = Relationship(back_populates="entity")
     history_quoting: List["HistoryQuoting"] = Relationship(back_populates="entity")
 
+    # Define the relationship between the entity and the stock list
+    stock_list: List["StockList"] = Relationship(back_populates="entity")
+
 
 # Importing this class to avoid circular dependencies
 from app.models.news import NewsStock, NewsMarket
 from app.models.stock_quoting import IntradayQuoting, HistoryQuoting
+from app.models.stock_list import StockList
 
 # Update the forward reference
 Entity.model_rebuild()

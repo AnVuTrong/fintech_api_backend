@@ -7,8 +7,28 @@ from app.services.wifeed_service import stock_quoting_service
 
 router = APIRouter()
 
+
 @router.get(
-    "/stock_quoting/",
+    "/history_quoting/code={code}&ngay={ngay}",
+    response_model=HistoryQuoting,
+    status_code=status.HTTP_200_OK,
+)
+async def get_stock_quote_by_date(
+        code,
+        ngay,
+        db: AsyncSession = Depends(get_session),
+):
+    """
+    Get stock market quoting by date.
+    :param db: The database session.
+    :param code: The stock code.
+    :param ngay: The date of the quoting.
+    """
+    return await stock_quoting_service.get_stock_quote_by_date(db, code, ngay)
+
+
+@router.get(
+    "/history_quoting/all/",
     response_model=list[HistoryQuoting],
     status_code=status.HTTP_200_OK,
 )
@@ -21,8 +41,9 @@ async def get_all_quoting(skip: int = 0, limit: int = 100, db: AsyncSession = De
     """
     return await stock_quoting_service.get_all_quoting(db, skip, limit)
 
+
 @router.get(
-    "/stock_quoting_by_period/code={code}&start_date={start_date}&end_date={end_date}",
+    "/history_quoting_by_period/code={code}&start_date={start_date}&end_date={end_date}",
     response_model=list[HistoryQuoting],
     status_code=status.HTTP_200_OK,
 )
