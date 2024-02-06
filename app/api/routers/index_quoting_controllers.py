@@ -59,10 +59,29 @@ async def get_all_vietnam_indexes(
 
 @router.get(
     "/vietnam_index_by_period/start_date={start_date}&end_date={end_date}",
-    response_model=Dict[datetime, Optional[float]],
+    response_model=list[VietnamIndex],
     status_code=status.HTTP_200_OK,
 )
 async def get_vietnam_index_by_period(
+        start_date,
+        end_date,
+        db: AsyncSession = Depends(get_session),
+):
+    """
+    Get the Vietnam stock market index by period.
+    :param db: The database session.
+    :param start_date: The start date of the period.
+    :param end_date: The end date of the period.
+    """
+    return await stock_index_service.get_vietnam_index_by_period(db, start_date, end_date)
+
+
+@router.get(
+    "/vietnam_index_by_period_news/start_date={start_date}&end_date={end_date}",
+    response_model=Dict[datetime, Optional[float]],
+    status_code=status.HTTP_200_OK,
+)
+async def get_vietnam_index_by_period_new(
         db: AsyncSession = Depends(get_session),
         code: str = None,
         start_date: str = None,
@@ -75,4 +94,4 @@ async def get_vietnam_index_by_period(
     :param start_date: The start date of the period.
     :param end_date: The end date of the period.
     """
-    return await stock_index_service.get_vietnam_index_by_period(db, code, start_date, end_date)
+    return await stock_index_service.get_vietnam_index_by_period_new(db, code, start_date, end_date)

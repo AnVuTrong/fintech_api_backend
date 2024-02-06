@@ -49,6 +49,22 @@ async def get_all_vietnam_indexes(
 
 async def get_vietnam_index_by_period(
         session: AsyncSession,
+        start_date: datetime,
+        end_date: datetime,
+) -> List[VietnamIndex]:
+    statement = (
+        select(VietnamIndex)
+        .where(VietnamIndex.ngay >= start_date)
+        .where(VietnamIndex.ngay <= end_date)
+        .where(VietnamIndex.vnindex.isnot(None))
+        .order_by(VietnamIndex.ngay)
+    )
+    result = await session.exec(statement)
+    return list(result.all())
+
+
+async def get_vietnam_index_by_period_new(
+        session: AsyncSession,
         code: str,
         start_date: datetime,
         end_date: datetime,

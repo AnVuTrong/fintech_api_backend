@@ -53,6 +53,26 @@ async def get_all_vietnam_indexes(
 
 
 async def get_vietnam_index_by_period(
+        db: AsyncSession = None,
+        start_date: str = None,
+        end_date: str = None,
+) -> list[VietnamIndex]:
+    """
+    Retrieve Vietnam stock market indexes by period.
+    :param db: The database session.
+    :param start_date: The start date of the period.
+    :param end_date: The end date of the period.
+    """
+    # Convert the date to the correct format
+    start_date = datetime.strptime(start_date, "%Y-%m-%d") if start_date else None
+    end_date = datetime.strptime(end_date, "%Y-%m-%d") if end_date else None
+    result = await stock_index_crud.get_vietnam_index_by_period(
+        db, start_date, end_date
+    )
+    return result
+
+
+async def get_vietnam_index_by_period_new(
     db: AsyncSession = None,
     code: str = None,
     start_date: str = None,
@@ -68,7 +88,7 @@ async def get_vietnam_index_by_period(
     # Convert the date to the correct format
     start_date = datetime.strptime(start_date, "%Y-%m-%d") if start_date else None
     end_date = datetime.strptime(end_date, "%Y-%m-%d") if end_date else None
-    result = await stock_index_crud.get_vietnam_index_by_period(
+    result = await stock_index_crud.get_vietnam_index_by_period_new(
         db, code, start_date, end_date
     )
     return result
