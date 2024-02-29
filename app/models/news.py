@@ -36,11 +36,6 @@ class NewsBase(SQLModel):
     # The sentiment of the maincontent_en
     sentiment: Optional[float]
 
-    # The entity id of the news
-    entity_id: str
-
-    model_config = ConfigDict(from_attributes=True)
-
     # Define the __getitem__ method to allow for easy access to the attributes
     def __getitem__(self, item):
         return getattr(self, item)
@@ -50,22 +45,12 @@ class NewsBase(SQLModel):
 class NewsMarket(NewsBase, table=True):
     id: Optional[str] = Field(default=None, primary_key=True)
 
-    # Define the relationship between the news and the entity
-    entity_id: Optional[str] = Field(default=None, foreign_key="entity.id")
-    entity: Optional["Entity"] = Relationship(back_populates="market_news")
+    model_config = ConfigDict(from_attributes=True)
 
 
 class NewsStock(NewsBase, table=True):
     id: Optional[str] = Field(default=None, primary_key=True)
     code: str
-
-    # Define the relationship between the news and the entity
-    entity_id: Optional[str] = Field(default=None, foreign_key="entity.id")
-    entity: Optional["Entity"] = Relationship(back_populates="stock_news")
-
-
-# Importing this class to avoid circular dependencies
-from app.models.entity import Entity
 
 # Update the forward reference
 NewsStock.model_rebuild()

@@ -5,8 +5,14 @@ from datetime import datetime
 
 # Define the news model class that inherits from the base class
 class Quoting(SQLModel):
+    # The id of the quoting, using UUID
+    id: Optional[str]
+
+    # The origin of the data, can be Intraday or History
+    api_origin: Optional[str]
+
     # The stock quote code
-    mack: str
+    mack: str = Field(index=True)
 
     # The date of the quoting
     ngay: datetime = Field(index=True)
@@ -65,24 +71,27 @@ class Quoting(SQLModel):
     # The value of buying from foreign investors
     gt_nn_mua: Optional[float]
 
-    # The entity id of the news
-    entity_id: str
-
     # Define the __getitem__ method to allow for easy access to the attributes
     def __getitem__(self, item):
         return getattr(self, item)
 
 
 class IntradayQuoting(Quoting, table=True):
-    ngay: Optional[datetime] = Field(default=None, primary_key=True)
+    id: Optional[str] = Field(default=None, primary_key=True)
 
-    # Define the relationship between the news and the entity
-    entity_id: Optional[str] = Field(default=None, foreign_key="entity.id")
-    entity: Optional["Entity"] = Relationship(back_populates="intraday_quoting")
+    ngay: Optional[datetime]
+
+    # The change in price of the day
+    changed: Optional[float]
+
+    # The change ratio of the day
+    changedratio: Optional[float]
 
 
 class HistoryQuoting(Quoting, table=True):
-    ngay: Optional[datetime] = Field(default=None, primary_key=True)
+    id: Optional[str] = Field(default=None, primary_key=True)
+
+    ngay: Optional[datetime]
 
     # The average price of the day
     avgprice: Optional[float]
@@ -92,14 +101,6 @@ class HistoryQuoting(Quoting, table=True):
 
     # The change ratio of the day
     changedratio: Optional[float]
-
-
-    # Define the relationship between the news and the entity
-    entity_id: Optional[str] = Field(default=None, foreign_key="entity.id")
-    entity: Optional["Entity"] = Relationship(back_populates="history_quoting")
-
-# Importing this class to avoid circular dependencies
-from app.models.entity import Entity
 
 # Update the forward reference
 IntradayQuoting.model_rebuild()

@@ -3,7 +3,7 @@ from typing import Optional, List
 from sqlmodel import Field, SQLModel, Relationship
 
 
-# Define the entity model class that inherits from the base class
+# Define the model class that inherits from the base class
 class StockListBase(SQLModel):
     # We use UUID as the primary key
     id: str
@@ -11,10 +11,10 @@ class StockListBase(SQLModel):
     # The name of the company
     name: str
 
-    # The quote symbol of the entity
+    # The quote symbol
     code: str = Field(index=True)
 
-    # The exchange the entity is listed on
+    # The exchange where the stock is traded
     exchange: Optional[str] = Field(index=True)
 
     # Define the __getitem__ method to allow for easy access to the attributes
@@ -74,15 +74,6 @@ class StockList(StockListBase, table=True):
 
     # The total number of treasury shares
     treasury_shares : Optional[float]
-
-    # The entity id of the company
-    entity_id: Optional[str] = Field(default=None, foreign_key="entity.id")
-
-    # Define the relationship between the entity and the stock list
-    entity: List["Entity"] = Relationship(back_populates="stock_list")
-
-# Importing this class to avoid circular dependencies
-from app.models.entity import Entity
 
 # Update the forward reference
 StockList.model_rebuild()
