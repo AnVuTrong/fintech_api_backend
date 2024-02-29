@@ -12,3 +12,8 @@ async def get_all_stock_list(session: AsyncSession) -> List[StockList]:
     statement = select(StockList)
     result = await session.exec(statement)
     return list(result.all())
+
+async def get_stock_info_by_code(session: AsyncSession, stock_code: str) -> Optional[StockList]:
+    statement = select(StockList).where(StockList.code == stock_code)
+    result = await session.exec(statement)
+    return result.first()
