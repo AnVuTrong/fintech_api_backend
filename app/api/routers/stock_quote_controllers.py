@@ -61,3 +61,18 @@ async def get_quoting_by_period(
     :param end_date: The end date of the period.
     """
     return await stock_quoting_service.get_quoting_by_period(db, code, start_date, end_date)
+
+
+@router.get(
+    "/history_quoting_latest/",
+    response_model=list[HistoryQuoting],
+    status_code=status.HTTP_200_OK,
+)
+async def get_latest_quoting(
+        db: AsyncSession = Depends(get_session),
+):
+    """
+    Get the latest stock market quoting.
+    :param db: The database session.
+    """
+    return await stock_quoting_service.get_latest_quoting(db)

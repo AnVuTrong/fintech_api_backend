@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import List, Optional
 
-from sqlmodel import select
+from sqlmodel import select, func
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.models.stock_quoting import HistoryQuoting
@@ -30,7 +30,9 @@ async def get_all_quoting(session: AsyncSession, skip: int = 0, limit: int = 100
     return list(result.all())
 
 
-async def get_quoting_by_period(session: AsyncSession, code: str, start_date: datetime, end_date: datetime) -> List[HistoryQuoting]:
+async def get_quoting_by_period(
+        session: AsyncSession, code: str, start_date: datetime, end_date: datetime
+) -> List[HistoryQuoting]:
     statement = (
         select(HistoryQuoting)
         .where(HistoryQuoting.mack == code)
@@ -42,7 +44,9 @@ async def get_quoting_by_period(session: AsyncSession, code: str, start_date: da
     return list(result.all())
 
 
-async def update_quoting(session: AsyncSession, quoting: HistoryQuoting) -> HistoryQuoting:
+async def update_quoting(
+        session: AsyncSession, quoting: HistoryQuoting
+) -> HistoryQuoting:
     statement = select(HistoryQuoting).where(HistoryQuoting.ngay == quoting.ngay)
     result = (await session.exec(statement)).first()
 
@@ -62,3 +66,9 @@ async def delete_quoting(session: AsyncSession, ngay: datetime):
         await session.commit()
     else:
         raise Exception("HistoryQuoting not found")
+
+
+async def get_latest_quoting(session: AsyncSession) -> List[HistoryQuoting]:
+    latest_date = (await session.exec(select(func.max(HistoryQuoting.ngay)))).first()
+    result = await session.exec(select(HistoryQuoting).where(HistoryQuoting.ngay == latest_date))
+    return list(result.all())

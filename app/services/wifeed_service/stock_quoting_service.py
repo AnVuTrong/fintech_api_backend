@@ -52,3 +52,12 @@ async def get_quoting_by_period(
     end_date_converted = datetime.strptime(end_date, "%Y-%m-%d") if end_date else None
     result = await stock.get_quoting_by_period(db, code, start_date_converted, end_date_converted)
     return result
+
+
+async def get_latest_quoting(db: AsyncSession = None) -> list[HistoryQuoting]:
+    """
+    Retrieve the latest stock market quoting.
+    :param db: The database session.
+    """
+    result = await stock.get_latest_quoting(db)
+    return result
