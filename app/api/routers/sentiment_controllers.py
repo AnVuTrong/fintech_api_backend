@@ -6,6 +6,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.db.db import get_session
 from app.models.sentiment import Sentiment
+from app.models.sentiment_fb import SentimentFacebook
 from app.services.wifeed_service import sentiment_service
 
 router = APIRouter()
@@ -36,3 +37,30 @@ async def get_sentiment_list(
             detail="Sentiment not found",
         )
     return sentiment
+
+
+@router.get(
+    "/sentiment_fb/label={label}&start-date={start_date}&end-date={end_date}&limit={limit}&skip={skip}",
+    response_model=List[SentimentFacebook],
+    status_code=status.HTTP_200_OK,
+)
+async def get_sentiment_fb_list(
+    label: str,
+    start_date: str = None,
+    end_date: str = None,
+    limit: Optional[int] = 100,
+    skip: Optional[int] = 0,
+    session: AsyncSession = Depends(get_session),
+):
+    start_date = datetime.strptime(start_date, "%Y-%m-%d") if start_date else None
+    end_date = datetime.strptime(end_date, "%Y-%m-%d") if end_date else None
+
+    sentiment_fb = await sentiment_service.get_sentiment_fb_list(
+        session, label, start_date, end_date, limit, skip
+    )
+    if sentiment_fb is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Sentiment Facebook not found",
+        )
+    return sentiment_fb
